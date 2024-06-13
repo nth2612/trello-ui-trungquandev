@@ -33,17 +33,11 @@ function Recent() {
       </Button>
       <Menu
         id="basic-menu-recent"
-        aria-labelledby="basic-button-recent"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
+        MenuListProps={{
+          'aria-labelledby': 'basic-button-recent'
         }}
       >
         <MenuItem>

@@ -37,17 +37,11 @@ function WorkSpaces() {
       </Button>
       <Menu
         id="basic-menu-workspaces"
-        aria-labelledby="basic-button-workspaces"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
+        MenuListProps={{
+          'aria-labelledby': 'basic-button-workspaces'
         }}
       >
         <MenuItem>
