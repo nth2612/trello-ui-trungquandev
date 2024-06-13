@@ -33,17 +33,11 @@ function Starred() {
       </Button>
       <Menu
         id="basic-menu-starred"
-        aria-labelledby="basic-button-starred"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
+        MenuListProps={{
+          'aria-labelledby': 'basic-button-starred'
         }}
       >
         <MenuItem>

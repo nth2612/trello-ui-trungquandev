@@ -33,17 +33,11 @@ function Templates() {
       </Button>
       <Menu
         id="basic-menu-templates"
-        aria-labelledby="basic-button-templates"
         anchorEl={anchorEl}
         open={open}
         onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'left'
+        MenuListProps={{
+          'aria-labelledby': 'basic-button-templates'
         }}
       >
         <MenuItem>

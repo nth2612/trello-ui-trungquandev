@@ -101,7 +101,7 @@ function BoardBar() {
         >
           Invite
         </Button>
-        <AvatarGroup max={4} sx={{ gap: '10px', '& .MuiAvatar-root' :{ width: '34px', height: '34px', fontSize: '16px', border: 'none' } }}>
+        <AvatarGroup max={4} sx={{ gap: '10px', '& .MuiAvatar-root' :{ width: '34px', height: '34px', fontSize: '16px', border: 'none', color: 'white', cursor: 'pointer', '&:first-of-type' : { backgroundColor : '#a4b0de' } } }}>
           <Tooltip title="Nishykata">
             <Avatar alt="Nishykata" src={myavt} />
           </Tooltip>
