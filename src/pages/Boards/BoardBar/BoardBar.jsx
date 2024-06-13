@@ -11,6 +11,7 @@ import { Tooltip } from '@mui/material'
 import myavt from '~/assets/myavt5.png'
 import Button from '@mui/material/Button'
 import PersonAddIcon from '@mui/icons-material/PersonAdd'
+import { capitalizeFirstLetter } from '~/utils/fomatters'
 
 const MENU_STYLES = {
   color: 'white',
@@ -26,7 +27,7 @@ const MENU_STYLES = {
   }
 }
 
-function BoardBar() {
+function BoardBar({board}) {
   return (
     <Box
       px={2}
@@ -52,13 +53,13 @@ function BoardBar() {
         <Chip
           sx={MENU_STYLES}
           icon={<DashboardIcon />}
-          label="Nishykata"
+          label={board?.title}
           clickable
         />
         <Chip
           sx={MENU_STYLES}
           icon={<VpnLockIcon />}
-          label="Public/Private Workspace"
+          label={capitalizeFirstLetter(board?.type)}
           clickable
         />
         <Chip
