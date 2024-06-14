@@ -7,14 +7,30 @@ import CardActions from '@mui/material/CardActions'
 import CardContent from '@mui/material/CardContent'
 import CardMedia from '@mui/material/CardMedia'
 import Typography from '@mui/material/Typography'
-import mybg from '~/assets/manhinh10.png'
+import { useSortable } from '@dnd-kit/sortable'
+import { CSS } from '@dnd-kit/utilities'
 
 function TrelloCard({ card }) {
+
+  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+    id: card._id,
+    data: { ...card }
+  })
+
+  const dndkitCardStyle = {
+    // touchAction: 'none',
+    // Nếu dùng CSS.Transform thì bị lỗi liên quan đến stretch
+    transform: CSS.Translate.toString(transform),
+    transition,
+    opacity: isDragging ? 0.5 : undefined
+  }
+
   const shouldShowCardAction = () => {
     return !!card?.memberIds.length || !!card?.comments.length || !!card?.attachments.length
   }
   return (
     <Card
+      ref={setNodeRef} style={dndkitCardStyle} {...listeners} {...attributes}
       sx={{
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
