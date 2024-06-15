@@ -72,7 +72,7 @@ function Column({ column }) {
           <Box>
             <Tooltip title="More options">
               <ExpandMoreIcon
-                sx={{ color: 'text.primary', cursor: 'pointer'}}
+                sx={{ color: 'text.primary', cursor: 'pointer' }}
                 id="basic-column-dropdown"
                 aria-controls={open ? 'basic-menu-dropdown' : undefined}
                 aria-haspopup="true"
