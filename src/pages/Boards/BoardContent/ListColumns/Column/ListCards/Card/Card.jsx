@@ -22,7 +22,8 @@ function TrelloCard({ card }) {
     // Nếu dùng CSS.Transform thì bị lỗi liên quan đến stretch
     transform: CSS.Translate.toString(transform),
     transition,
-    opacity: isDragging ? 0.5 : undefined
+    opacity: isDragging ? 0.5 : undefined,
+    border: isDragging ? '1px solid #2ecc71' : undefined
   }
 
   const shouldShowCardAction = () => {
@@ -37,12 +38,12 @@ function TrelloCard({ card }) {
         overflow: 'unset'
       }}>
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover}/>}
-      <CardContent sx={{ padding: 1.5, '&:last-child' : { paddingBottom: 1.5} }}>
+      <CardContent sx={{ padding: 1.5, '&:last-child' : { paddingBottom: 1.5 } }}>
         <Typography>{card?.title}</Typography>
       </CardContent>
-      {shouldShowCardAction() && <CardActions sx={{ padding: '0 4px 8px 4px'}}>
+      {shouldShowCardAction() && <CardActions sx={{ padding: '0 4px 8px 4px' }}>
         {!!card?.memberIds.length && <Button size="small" startIcon={<GroupIcon/>}>{card?.memberIds.length}</Button>}
-        {!!card?.comments.length && <Button size="small" startIcon={<GroupIcon/>}>{card?.comments.length}</Button>}
+        {!!card?.comments.length && <Button size="small" startIcon={<CommentIcon/>}>{card?.comments.length}</Button>}
         {!!card?.attachments.length && <Button size="small" startIcon={<AttachmentIcon/>}>{card?.attachments.length}</Button>}
       </CardActions>}
     </Card>
