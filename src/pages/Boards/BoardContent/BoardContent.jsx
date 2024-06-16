@@ -1,8 +1,8 @@
 import Box from '@mui/material/Box'
 import ListColumns from './ListColumns/ListColumns'
 import { mapOrder } from '~/utils/sorts'
-import { DndContext, useSensor, useSensors, MouseSensor, TouchSensor, DragOverlay, defaultDropAnimationSideEffects, closestCorners } from '@dnd-kit/core'
-import { useEffect, useState } from 'react'
+import { DndContext, useSensor, useSensors, MouseSensor, TouchSensor, DragOverlay, defaultDropAnimationSideEffects, closestCorners, pointerWithin, rectIntersection, getFirstCollision, closestCenter } from '@dnd-kit/core'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import { arrayMove } from '@dnd-kit/sortable'
 import Column from './ListColumns/Column/Column'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card'
@@ -46,6 +46,7 @@ function BoardContent({ board }) {
   const [activeDragType, setActiveDragItemType] = useState(null)
   const [activeDragData, setActiveDragItemData] = useState(null)
   const [oldColumnWhenDragCard, setOldColumnWhenDragCard] = useState(null)
+  const lastOverId = useRef(null)
 
   useEffect(() => {
     setOrderedColumn(mapOrder(board?.columns, board?.columnOrderIds, '_id'))
@@ -111,7 +112,7 @@ function BoardContent({ board }) {
     if (!active || !over) return
 
     const { id: activeDragingCardId, data: { current : activeDragingCardData } } = active
-    const { id: overCardId} = over
+    const { id: overCardId } = over
     const activeColumn = findColumnByCardId(activeDragingCardId)
     const overColumn = findColumnByCardId(overCardId)
 
@@ -131,7 +132,7 @@ function BoardContent({ board }) {
     if (activeDragType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       console.log('keo tha')
       const { id: activeDragingCardId, data: { current : activeDragingCardData } } = active
-      const { id: overCardId} = over
+      const { id: overCardId } = over
       const activeColumn = findColumnByCardId(activeDragingCardId)
       const overColumn = findColumnByCardId(overCardId)
 
@@ -182,10 +183,35 @@ function BoardContent({ board }) {
     })
   }
 
+  const collisionDetectionStrategy = useCallback((args) => {
+    if (activeDragType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) {
+      return closestCorners({ ...args })
+    }
+    const pointerIntersections = pointerWithin(args)
+    const intersections = pointerIntersections?.length > 0 ? pointerIntersections : rectIntersection(args)
+    // Tìm overid đầu trong list intersection
+    let overId = getFirstCollision(intersections, 'id')
+    if (overId) {
+      const checkCol = orderedColumn.find(c => c._id === overId)
+      if (checkCol) {
+        overId = closestCenter({
+          ...args,
+          droppableContainers : args.droppableContainers.filter(container => {
+            return (container.id !== overId) && (checkCol?.cardOrderIds?.includes(container.id)) 
+          })[0]?.id
+        })
+      }
+      lastOverId.current = overId
+      return [{ id : overId }]
+    }
+    return lastOverId.current ? [{ id: lastOverId.current }] : []
+  }, [activeDragType, orderedColumn])
+
   return (
     <DndContext
       sensors={sensors}
-      collisionDetection={closestCorners}
+      // collisionDetection={closestCorners}
+      collisionDetection={collisionDetectionStrategy}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}>
