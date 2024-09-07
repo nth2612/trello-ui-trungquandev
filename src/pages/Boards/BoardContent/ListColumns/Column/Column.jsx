@@ -26,7 +26,6 @@ function Column({ column }) {
     id: column._id,
     data: { ...column }
   })
-
   const dndkitColumnStyle = {
     // touchAction: 'none',
     // Nếu dùng CSS.Transform thì bị lỗi liên quan đến stretch

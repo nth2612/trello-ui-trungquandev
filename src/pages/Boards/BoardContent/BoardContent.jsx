@@ -103,7 +103,6 @@ function BoardContent({ board }) {
       setOldColumnWhenDragCard(findColumnByCardId(event?.active?.id))
     }
   }
-
   const handleDragOver = (event) => {
     // Không làm gì nếu kéo card
     if (activeDragType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) return
