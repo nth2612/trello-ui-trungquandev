@@ -35,7 +35,9 @@ function TrelloCard({ card }) {
       sx={{
         cursor: 'pointer',
         boxShadow: '0 1px 1px rgba(0, 0, 0, 0.2)',
-        overflow: 'unset'
+        overflow: 'unset',
+        border: '1px solid transparent',
+        '&:hover' : { borderColor: (theme) => theme.palette.primary.main }
       }}>
       {card?.cover && <CardMedia sx={{ height: 140 }} image={card?.cover}/>}
       <CardContent sx={{ padding: 1.5, '&:last-child' : { paddingBottom: 1.5 } }}>

@@ -6,7 +6,7 @@ import ContentPaste from '@mui/icons-material/ContentPaste'
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever'
 import DragHandleIcon from '@mui/icons-material/DragHandle'
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore'
-import { Button } from '@mui/material'
+import { Button, TextField } from '@mui/material'
 import Box from '@mui/material/Box'
 import Divider from '@mui/material/Divider'
 import ListItemIcon from '@mui/material/ListItemIcon'
@@ -20,6 +20,8 @@ import ListCards from './ListCards/ListCards'
 import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
+import CloseIcon from '@mui/icons-material/Close'
+
 
 function Column({ column }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -41,6 +43,17 @@ function Column({ column }) {
   const handleClick = (event) => setAnchorEl(event.currentTarget)
   const handleClose = () => setAnchorEl(null)
   const orderedCards = mapOrder(column?.cards, column?.cardOrderIds, '_id')
+
+  const [openNewCard, setOpenNewCard] = useState(false)
+  const toggleOpenNewCardForm = () => setOpenNewCard(!openNewCard)
+  const [newCardTitle, setNewCardTitle] = useState('')
+  const addNewCard = () => {
+    if (!newCardTitle) {
+      return
+    }
+    setNewCardTitle('')
+    toggleOpenNewCardForm()
+  }
   return (
     <div ref={setNodeRef} style={dndkitColumnStyle} {...attributes}>
       <Box
@@ -121,15 +134,46 @@ function Column({ column }) {
         {/* Box Footer */}
         <Box sx={{
           height: (theme) => theme.trello.columnFooterHeight,
-          padding: 2,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between'
+          padding: 2
         }}>
-          <Button startIcon={<AddCardIcon/>}>Add new card</Button>
-          <Tooltip title="Drag to move">
-            <DragHandleIcon sx={{ cursor: 'pointer' }} />
-          </Tooltip>
+          {!openNewCard
+            ? <Box sx={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between' }} >
+              <Button startIcon={<AddCardIcon />} onClick={toggleOpenNewCardForm}>Add new card</Button>
+              <Tooltip title="Drag to move">
+                <DragHandleIcon sx={{ cursor: 'pointer' }} />
+              </Tooltip>
+            </Box>
+            : <Box sx={{ height: '100%', display: 'flex', alignItems: 'center', gap: 1 }}>
+              <TextField
+                label="Enter card title..."
+                type="text"
+                size='small'
+                variant='outlined'
+                data-no-dnd='true'
+                autoFocus
+                value={newCardTitle}
+                onChange={(e) => setNewCardTitle(e.target.value)}
+                sx={{
+                  '& label, & input, & label.Mui-focused' : { color : 'white' },
+                  '& .MuiOutlinedInput-root' : {
+                    '& fieldset, &:hover fieldset, &.Mui-focused fieldset' : { borderColor: 'white' }
+                  }
+                }}
+              />
+              <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Button variant='contained' data-no-dnd='true' color='success' size='small' sx={{ boxShadow: 'none' }}>Add</Button>
+                <CloseIcon sx={{
+                  color: 'white',
+                  cursor: 'pointer'
+                }}
+                fontSize='small'
+                onClick={toggleOpenNewCardForm} />
+              </Box>
+            </Box>
+          }
         </Box>
       </Box>
     </div>
