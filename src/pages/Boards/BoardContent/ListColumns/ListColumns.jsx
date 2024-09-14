@@ -7,6 +7,7 @@ import { useState } from 'react'
 import { InputAdornment, TextField } from '@mui/material'
 import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
+import { toast } from 'react-toastify'
 
 function ListColumns({ columns }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
@@ -14,6 +15,7 @@ function ListColumns({ columns }) {
   const [newColTitle, setNewColTitle] = useState('')
   const addNewColumn = () => {
     if (!newColTitle) {
+      toast.error('Please enter column title')
       return
     }
     setNewColTitle('')
@@ -81,7 +83,7 @@ function ListColumns({ columns }) {
               }}
             />
             <Box>
-              <Button variant='contained' color='success' size='small' sx={{ boxShadow: 'none' }}>Add column</Button>
+              <Button variant='contained' onClick={addNewColumn} color='success' size='small' sx={{ boxShadow: 'none' }}>Add column</Button>
               <CloseIcon sx={{
                 color: 'white',
                 cursor: 'pointer'

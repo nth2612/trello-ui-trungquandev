@@ -21,7 +21,7 @@ import { mapOrder } from '~/utils/sorts'
 import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
-
+import { toast } from 'react-toastify'
 
 function Column({ column }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
@@ -49,6 +49,9 @@ function Column({ column }) {
   const [newCardTitle, setNewCardTitle] = useState('')
   const addNewCard = () => {
     if (!newCardTitle) {
+      toast.error('Please enter card title', {
+        position: 'bottom-right'
+      })
       return
     }
     setNewCardTitle('')
@@ -164,7 +167,7 @@ function Column({ column }) {
                 }}
               />
               <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Button variant='contained' data-no-dnd='true' color='success' size='small' sx={{ boxShadow: 'none' }}>Add</Button>
+                <Button variant='contained' onClick={addNewCard} data-no-dnd='true' color='success' size='small' sx={{ boxShadow: 'none' }}>Add</Button>
                 <CloseIcon sx={{
                   color: 'white',
                   cursor: 'pointer'
