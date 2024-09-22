@@ -8,13 +8,15 @@ import Column from './ListColumns/Column/Column'
 import TrelloCard from './ListColumns/Column/ListCards/Card/Card'
 import { cloneDeep } from 'lodash'
 import { MouseSensor, TouchSensor } from '~/customlib/dndkitSensor'
+import { isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/fomatters'
 
 const ACTIVE_DRAG_ITEM_TYPE = {
   COLUMN : 'ACTIVE_DRAG_ITEM_TYPE_COLUMN',
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board }) {
+function BoardContent({ board, createNewColumn, createNewCard }) {
 
   // Cái này phải kết hợp với touchAction none cơ mà vẫn còn bug của mobile
   // const pointerSensor = useSensor(PointerSensor, {
@@ -77,7 +79,13 @@ function BoardContent({ board }) {
       const nextOverColumn = nextColumn.find(col => col._id === overColumn._id)
       if (nextActiveColumn) {
         //
+        console.log(nextActiveColumn)
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDragingCardId)
+
+        if (isEmpty(nextActiveColumn.cards)) {
+          console.log('het card')
+          nextActiveColumn.cards = [generatePlaceholderCard(nextActiveColumn)]
+        }
         nextActiveColumn.cardOrderIds = nextActiveColumn.cards.map(card => card._id)
       }
       if (nextOverColumn) {
@@ -87,6 +95,9 @@ function BoardContent({ board }) {
           columnId : nextOverColumn._id
         }
         nextOverColumn.cards = nextOverColumn.cards.toSpliced(newCardIndex, 0, rebuild)
+
+        nextOverColumn.cards = nextOverColumn.cards.filter(card => !card.FE_PlaceholderCard)
+
         nextOverColumn.cardOrderIds = nextOverColumn.cards.map(card => card._id)
       }
 
@@ -123,14 +134,15 @@ function BoardContent({ board }) {
     }
   }
   const handleDragEnd = (event) => {
-
     const { active, over } = event
     //Nếu over là null thì thoát luôn không log lỗi
     if (!active || !over) return
+    console.log('over', over)
 
     // Xử lý kéo thả card
     if (activeDragType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
       console.log('keo tha')
+      console.log('over', over)
       const { id: activeDragingCardId, data: { current : activeDragingCardData } } = active
       const { id: overCardId } = over
       const activeColumn = findColumnByCardId(activeDragingCardId)
@@ -188,13 +200,14 @@ function BoardContent({ board }) {
       return closestCorners({ ...args })
     }
     const pointerIntersections = pointerWithin(args)
-    const intersections = pointerIntersections?.length > 0 ? pointerIntersections : rectIntersection(args)
+    if (!pointerIntersections?.length) return
+    // const intersections = pointerIntersections?.length > 0 ? pointerIntersections : rectIntersection(args)
     // Tìm overid đầu trong list intersection
-    let overId = getFirstCollision(intersections, 'id')
+    let overId = getFirstCollision(pointerIntersections, 'id')
     if (overId) {
       const checkCol = orderedColumn.find(c => c._id === overId)
       if (checkCol) {
-        overId = closestCenter({
+        overId = closestCorners({
           ...args,
           droppableContainers : args.droppableContainers.filter(container => {
             return (container.id !== overId) && (checkCol?.cardOrderIds?.includes(container.id)) 
@@ -223,7 +236,7 @@ function BoardContent({ board }) {
           padding: '10px 0'
         }}
       >
-        <ListColumns columns={orderedColumn} />
+        <ListColumns columns={orderedColumn} createNewColumn={createNewColumn} createNewCard={createNewCard} />
         <DragOverlay dropAnimation={dropAnimation} >
           {!activeDragData && null}
           {(activeDragType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragData} />}

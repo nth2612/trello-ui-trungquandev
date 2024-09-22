@@ -9,15 +9,19 @@ import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 
-function ListColumns({ columns }) {
+function ListColumns({ columns, createNewColumn, createNewCard }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumn(!openNewColumn)
   const [newColTitle, setNewColTitle] = useState('')
-  const addNewColumn = () => {
+  const addNewColumn = async () => {
     if (!newColTitle) {
       toast.error('Please enter column title')
       return
     }
+    const newColumnData = {
+      title: newColTitle
+    }
+    await createNewColumn(newColumnData)
     setNewColTitle('')
     toggleOpenNewColumnForm()
   }
@@ -36,7 +40,7 @@ function ListColumns({ columns }) {
           margin : 2
         }
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} />)}
+        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} />)}
 
         {/* Box add new column */}
         {!openNewColumn

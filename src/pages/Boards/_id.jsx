@@ -4,7 +4,9 @@ import BoardBar from '~/pages/Boards/BoardBar/BoardBar'
 import BoardContent from '~/pages/Boards/BoardContent/BoardContent'
 // import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
-import { fetchBoardDetailsAPI } from '~/apis'
+import { createNewCardAPI, createNewColumnAPI, fetchBoardDetailsAPI } from '~/apis'
+import { isEmpty } from 'lodash'
+import { generatePlaceholderCard } from '~/utils/fomatters'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -13,10 +15,42 @@ function Board() {
     const boardId = '66e25df363f83f9f1b48fdc1'
     // Call api
     fetchBoardDetailsAPI(boardId).then(boardd => {
-      console.log('hihi', boardd)
+      boardd.columns.forEach(col => {
+        if (isEmpty(col.cards)) {
+          col.cards = [generatePlaceholderCard(col)]
+          col.cardOrderIds = [generatePlaceholderCard(col)._id]
+        }
+      })
       setBoard(boardd)
     })
   }, [])
+  // Call API tao moi du lieu va lam lai du lieu board
+  const createNewColumn = async (newColumnData) => {
+    const createdColumn = await createNewColumnAPI({
+      ...newColumnData,
+      boardId: board._id
+    })
+    createdColumn.cards = [generatePlaceholderCard(createdColumn)]
+    createdColumn.cardOrderIds = [generatePlaceholderCard(createdColumn)._id]
+    const newBoard = { ...board }
+    newBoard.columns.push(createdColumn)
+    newBoard.columnOrderIds.push(createdColumn._id)
+    setBoard(newBoard)
+  }
+  const createNewCard = async (newCardData) => {
+    const createdCard = await createNewCardAPI({
+      ...newCardData,
+      boardId: board._id
+    })
+    const newBoard = { ...board }
+    const columnToUpdate = newBoard.columns.find(col => col._id === createdCard.columnId)
+    if (columnToUpdate) {
+      columnToUpdate.cards.push(createdCard)
+      columnToUpdate.cardOrderIds.push(createdCard._id)
+      columnToUpdate.cards = columnToUpdate.cards.filter(card => !card.FE_PlaceholderCard)
+    }
+    setBoard(newBoard)
+  }
   return (
     <Container
       disableGutters={true}
@@ -25,7 +59,7 @@ function Board() {
     >
       <AppBar/>
       <BoardBar board={board} />
-      <BoardContent board={board} />
+      <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} />
     </Container>
   )
 }
