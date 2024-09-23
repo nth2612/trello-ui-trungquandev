@@ -4,7 +4,7 @@ import BoardBar from '~/pages/Boards/BoardBar/BoardBar'
 import BoardContent from '~/pages/Boards/BoardContent/BoardContent'
 // import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
-import { createNewCardAPI, createNewColumnAPI, fetchBoardDetailsAPI } from '~/apis'
+import { createNewCardAPI, createNewColumnAPI, fetchBoardDetailsAPI, updateBoardDetailsAPI } from '~/apis'
 import { isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/fomatters'
 
@@ -51,6 +51,18 @@ function Board() {
     }
     setBoard(newBoard)
   }
+  // Call api sau khi keo tha xong column
+  const moveColumns = async (dndOrderedColumn) => {
+    const dndOrderedColumnIds = dndOrderedColumn.map(c => c._id)
+    const newBoard = { ...board }
+    newBoard.columns = dndOrderedColumn
+    newBoard.columnOrderIds = dndOrderedColumnIds
+    setBoard(newBoard)
+    updateBoardDetailsAPI(newBoard._id, { columnOrderIds: newBoard.columnOrderIds })
+  }
+  const moveCards = async () => {
+    
+  }
   return (
     <Container
       disableGutters={true}
@@ -59,7 +71,7 @@ function Board() {
     >
       <AppBar/>
       <BoardBar board={board} />
-      <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} />
+      <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} moveColumns={moveColumns} />
     </Container>
   )
 }

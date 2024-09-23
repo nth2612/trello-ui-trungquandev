@@ -16,7 +16,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns }) {
 
   // Cái này phải kết hợp với touchAction none cơ mà vẫn còn bug của mobile
   // const pointerSensor = useSensor(PointerSensor, {
@@ -137,7 +137,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
     const { active, over } = event
     //Nếu over là null thì thoát luôn không log lỗi
     if (!active || !over) return
-    console.log('over', over)
+    // console.log('over', over)
 
     // Xử lý kéo thả card
     if (activeDragType === ACTIVE_DRAG_ITEM_TYPE.CARD) {
@@ -176,6 +176,7 @@ function BoardContent({ board, createNewColumn, createNewCard }) {
         const dndOrderedColumn = arrayMove(orderedColumn, oldColumnIndex, newColumnIndex)
         // Dùng dòng dưới để lấy ra list muốn sort, lưu vào db để call api
         // const dndOrderedColumnIds = dndOrderedColumn.map(c => c._id)
+        moveColumns(dndOrderedColumn)
         setOrderedColumn(dndOrderedColumn)
       }
     }
