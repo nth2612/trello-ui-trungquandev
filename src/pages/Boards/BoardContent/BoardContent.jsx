@@ -15,7 +15,7 @@ const ACTIVE_DRAG_ITEM_TYPE = {
   CARD : 'ACTIVE_DRAG_ITEM_TYPE_CARD'
 }
 
-function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInSameColumn, moveCardToDifferentColumn }) {
+function BoardContent({ board, createNewColumn, createNewCard, moveColumns, moveCardInSameColumn, moveCardToDifferentColumn, deleteColumnDetails }) {
 
   // Cái này phải kết hợp với touchAction none cơ mà vẫn còn bug của mobile
   // const pointerSensor = useSensor(PointerSensor, {
@@ -78,8 +78,6 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
       const nextActiveColumn = nextColumn.find(col => col._id === activeColumn._id)
       const nextOverColumn = nextColumn.find(col => col._id === overColumn._id)
       if (nextActiveColumn) {
-        //
-        console.log(nextActiveColumn)
         nextActiveColumn.cards = nextActiveColumn.cards.filter(card => card._id !== activeDragingCardId)
 
         if (isEmpty(nextActiveColumn.cards)) {
@@ -239,7 +237,7 @@ function BoardContent({ board, createNewColumn, createNewCard, moveColumns, move
           padding: '10px 0'
         }}
       >
-        <ListColumns columns={orderedColumn} createNewColumn={createNewColumn} createNewCard={createNewCard} />
+        <ListColumns columns={orderedColumn} createNewColumn={createNewColumn} createNewCard={createNewCard} deleteColumnDetails={deleteColumnDetails} />
         <DragOverlay dropAnimation={dropAnimation} >
           {!activeDragData && null}
           {(activeDragType === ACTIVE_DRAG_ITEM_TYPE.COLUMN) && <Column column={activeDragData} />}

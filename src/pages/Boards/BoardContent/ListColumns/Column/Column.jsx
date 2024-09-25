@@ -21,8 +21,9 @@ import { useSortable } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
+import { useConfirm } from 'material-ui-confirm'
 
-function Column({ column, createNewCard }) {
+function Column({ column, createNewCard, deleteColumnDetails }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: column._id,
     data: { ...column }
@@ -60,6 +61,18 @@ function Column({ column, createNewCard }) {
     createNewCard(newCardData)
     setNewCardTitle('')
     toggleOpenNewCardForm()
+  }
+  const confirmDeleteColumn = useConfirm()
+  //Xoa column
+  const handleDeleteColumn = () => {
+    confirmDeleteColumn({
+      description: 'Do you want to delete your column and the whole cards in that ?',
+      title: 'Warning delete',
+      dialogProps: { maxWidth: 'xs' }
+    }).then(() => {
+      deleteColumnDetails(column._id)
+      console.log(column._id)
+    }).catch(() => {})
   }
   return (
     <div ref={setNodeRef} style={dndkitColumnStyle} {...attributes}>
@@ -125,7 +138,7 @@ function Column({ column, createNewCard }) {
                 <ListItemText>Paste</ListItemText>
               </MenuItem>
               <Divider />
-              <MenuItem>
+              <MenuItem onClick={handleDeleteColumn}>
                 <ListItemIcon><DeleteForeverIcon fontSize="small" /></ListItemIcon>
                 <ListItemText>Remove this column</ListItemText>
               </MenuItem>

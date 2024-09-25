@@ -9,7 +9,7 @@ import SearchIcon from '@mui/icons-material/Search'
 import CloseIcon from '@mui/icons-material/Close'
 import { toast } from 'react-toastify'
 
-function ListColumns({ columns, createNewColumn, createNewCard }) {
+function ListColumns({ columns, createNewColumn, createNewCard, deleteColumnDetails }) {
   const [openNewColumn, setOpenNewColumn] = useState(false)
   const toggleOpenNewColumnForm = () => setOpenNewColumn(!openNewColumn)
   const [newColTitle, setNewColTitle] = useState('')
@@ -40,7 +40,7 @@ function ListColumns({ columns, createNewColumn, createNewCard }) {
           margin : 2
         }
       }}>
-        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} />)}
+        {columns?.map(column => <Column key={column._id} column={column} createNewCard={createNewCard} deleteColumnDetails={deleteColumnDetails} />)}
 
         {/* Box add new column */}
         {!openNewColumn

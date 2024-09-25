@@ -85,6 +85,7 @@ function Board() {
   }
   // Cap nhat cardorderids cua column bi mat card, sau do cap nhat column nhan dc card, cap nhat lai column id cua card vua keo
   const moveCardToDifferentColumn = async (currentCardId, prevColumnId, nextColumnId, dndOrderedColumn) => {
+    console.log('card', currentCardId)
     const dndOrderedColumnIds = dndOrderedColumn.map(c => c._id)
     const newBoard = { ...board }
     newBoard.columns = dndOrderedColumn
@@ -103,6 +104,12 @@ function Board() {
       nextCardOrderIds: dndOrderedColumn.find(c => c._id === nextColumnId)?.cardOrderIds
     })
   }
+
+  // Xu ly xoa column va het card
+  const deleteColumnDetails = () => {
+
+  }
+
   if (!board) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', width: '100vw', height: '100vh' }}>
@@ -118,7 +125,15 @@ function Board() {
     >
       <AppBar/>
       <BoardBar board={board} />
-      <BoardContent board={board} createNewColumn={createNewColumn} createNewCard={createNewCard} moveColumns={moveColumns} moveCardInSameColumn={moveCardInSameColumn} moveCardToDifferentColumn={moveCardToDifferentColumn} />
+      <BoardContent
+        board={board}
+        createNewColumn={createNewColumn}
+        createNewCard={createNewCard}
+        moveColumns={moveColumns}
+        moveCardInSameColumn={moveCardInSameColumn}
+        moveCardToDifferentColumn={moveCardToDifferentColumn}
+        deleteColumnDetails={deleteColumnDetails}
+      />
     </Container>
   )
 }
