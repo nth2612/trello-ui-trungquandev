@@ -4,11 +4,12 @@ import BoardBar from '~/pages/Boards/BoardBar/BoardBar'
 import BoardContent from '~/pages/Boards/BoardContent/BoardContent'
 // import { mockData } from '~/apis/mock-data'
 import { useEffect, useState } from 'react'
-import { createNewCardAPI, createNewColumnAPI, fetchBoardDetailsAPI, moveCardToDiffColumnAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
+import { createNewCardAPI, createNewColumnAPI, deleteColumnDetailAPI, fetchBoardDetailsAPI, moveCardToDiffColumnAPI, updateBoardDetailsAPI, updateColumnDetailsAPI } from '~/apis'
 import { isEmpty } from 'lodash'
 import { generatePlaceholderCard } from '~/utils/fomatters'
 import { mapOrder } from '~/utils/sorts'
 import CircularProgress from '@mui/material/CircularProgress'
+import { toast } from 'react-toastify'
 
 function Board() {
   const [board, setBoard] = useState(null)
@@ -106,8 +107,16 @@ function Board() {
   }
 
   // Xu ly xoa column va het card
-  const deleteColumnDetails = () => {
-
+  const deleteColumnDetails = (columnId) => {
+    // Update du lieu cho board
+    const newBoard = { ...board }
+    newBoard.columns = newBoard.columns.filter(c => c._id !== columnId)
+    newBoard.columnOrderIds = newBoard.columnOrderIds.filter(_id => _id !== columnId)
+    setBoard(newBoard)
+    // Goi api
+    deleteColumnDetailAPI(columnId).then(res => {
+      toast.success(res?.deleteResult)
+    })
   }
 
   if (!board) {

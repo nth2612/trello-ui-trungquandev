@@ -71,7 +71,6 @@ function Column({ column, createNewCard, deleteColumnDetails }) {
       dialogProps: { maxWidth: 'xs' }
     }).then(() => {
       deleteColumnDetails(column._id)
-      console.log(column._id)
     }).catch(() => {})
   }
   return (
